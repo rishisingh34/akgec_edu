@@ -1,6 +1,6 @@
 const {ACCESS_TOKEN_SECRET} = require('../config/env.config');
 const jwt = require("jsonwebtoken");
-const User = require("../models/user.model");
+const Student  = require("../models/student.model");
 
 const Token = {
   signAccessToken: (id) => {
@@ -9,7 +9,7 @@ const Token = {
       const secret = ACCESS_TOKEN_SECRET;
       const options = {
         expiresIn: "10d",
-        issuer: "CyberSecure",
+        issuer: "akg_edu",
         audience: id,
       };
       jwt.sign(payload, secret, options, (err, token) => {
@@ -30,7 +30,7 @@ const Token = {
 
       const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
 
-      req.user = await User.findById(decoded.aud).select("-passwd");
+      req.student  = await Student.findById(decoded.aud).select("-passwd");
       
 
       next();

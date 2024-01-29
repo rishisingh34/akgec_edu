@@ -9,7 +9,7 @@ const auth = async (req, res, next) => {
     }
     const decoded =jwt.verify(token, ACCESS_TOKEN_SECRET);
     
-    req.adminId = decoded.aud;
+    req.studentId = decoded.aud;
     next();
   } catch (err) {
     console.error(err);
