@@ -1,4 +1,3 @@
-// create a student schema 
 const mongoose = require("mongoose");
 
 const studentSchema = new mongoose.Schema({
@@ -14,6 +13,10 @@ const studentSchema = new mongoose.Schema({
   dob : {
     type : String ,
     required : true , 
+  },
+  name : {
+    type : String , 
+    required : true, 
   }
 })
 
