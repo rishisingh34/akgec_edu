@@ -1,5 +1,6 @@
 const Student = require("../models/student.model"); 
 const Token = require("../middlewares/token.middleware");
+const Attendance = require("../models/attendance.model") ;
 
 const studentController = {
   login: async (req, res) => {
@@ -27,7 +28,9 @@ const studentController = {
   },
   attendance : async (req,res ) => {
     try {
-       
+      const studentId = req.studentId ;
+      const attendance = await Attendance.find({student : studentId }).populate('subject') ;
+      return res.status(200).json({ attendance });
     } catch (err) {
       console.log(err) ;
       return res.status.json({message : "Internal Server Error"}); 
