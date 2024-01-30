@@ -38,6 +38,7 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Documents",
   },
+  
 });
 
 module.exports = mongoose.model("Student", studentSchema);
