@@ -25,6 +25,14 @@ const studentController = {
       return res.status(500).json({ message: err.message });
     }
   },
+  attendance : async (req,res ) => {
+    try {
+       
+    } catch (err) {
+      console.log(err) ;
+      return res.status.json({message : "Internal Server Error"}); 
+    }
+  }
 };
 
 module.exports = studentController;
