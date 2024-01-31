@@ -1,12 +1,11 @@
 {
-  "name": "cybersecure",
+  "name": "akgec_edu",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
-  "author": "",
+  "author": "pranjal",
   "license": "ISC",
   "dependencies": {
     "@google/generative-ai": "^0.1.3",
@@ -26,5 +25,6 @@
     "nodemon": "^3.0.2",
     "tesseract.js": "^5.0.4",
     "twilio": "^4.20.0"
-  }
+  },
+  "description": ""
 }
