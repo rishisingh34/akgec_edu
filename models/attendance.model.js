@@ -19,6 +19,10 @@ const attendanceSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isAc: {
+    type: Boolean,
+    default: false
+  }
 });
 
 module.exports = mongoose.model("Attendance", attendanceSchema);
