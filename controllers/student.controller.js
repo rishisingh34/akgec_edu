@@ -1,6 +1,7 @@
 const Student = require("../models/student.model"); 
 const Token = require("../middlewares/token.middleware");
 const Attendance = require("../models/attendance.model") ;
+const Subject=require("../models/subject.model")
 
 const studentController = {
   login: async (req, res) => {
@@ -33,7 +34,7 @@ const studentController = {
       return res.status(200).json({ attendance });
     } catch (err) {
       console.log(err) ;
-      return res.status.json({message : "Internal Server Error"}); 
+      return res.status(500).json({message : "Internal Server Error"}); 
     }
   }
 };
