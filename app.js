@@ -8,6 +8,7 @@ const {sendMail} = require('./utils/mailer.util') ;
 
 const studentRoutes = require('./routes/student.routes') ;
 
+app.set('trust proxy', true) ;
 app.use(cookieParser()) ;
 app.use(express.json()) ;
 app.use(handleCors);
