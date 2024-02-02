@@ -8,9 +8,6 @@ const sectionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
   }],
-  year : {
-    type : Number 
-  },
   semester : {
     type : Number 
   },

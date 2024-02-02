@@ -2,6 +2,8 @@ const Student = require("../models/student.model");
 const Token = require("../middlewares/token.middleware");
 const Attendance = require("../models/attendance.model") ;
 const Subject=require("../models/subject.model")
+const Event=require("../models/event.model");
+const Assignment=require("../models/assignment.model");
 
 const studentController = {
   login: async (req, res) => {
@@ -29,9 +31,29 @@ const studentController = {
   },
   attendance : async (req,res ) => {
     try {
-      const studentId = req.studentId ;
+      const studentId = req.userId ;
       const attendance = await Attendance.find({student : studentId }).populate('subject') ;
       return res.status(200).json({ attendance });
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"}); 
+    }
+  },
+  assignment : async (req,res)=>{
+    try{
+      const studentId=req.userId;
+      const student=await Student.findOne({_id:studentId});
+      const assignment=await Assignment.find({section: student.section, semester: student.semester}).populate('subject');
+      res.status(200).json({assignment});
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"}); 
+    }
+  },
+  event: async (req,res)=>{
+    try{
+      const event=await Event.find();
+      res.status(200).json({event});
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"}); 

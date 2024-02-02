@@ -18,6 +18,12 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  section:{
+    type:String,
+  },
+  semester:{
+    type:Number,
+  },
   personalInfo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "PersonalInfo",
