@@ -21,7 +21,7 @@ const personalInfoSchema = new mongoose.Schema({
     type : String ,
   },
   semester : {  
-    type : String ,
+    type : Number ,
   },
   courseName : {
     type : String 
