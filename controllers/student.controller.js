@@ -4,6 +4,7 @@ const Attendance = require("../models/attendance.model") ;
 const Subject=require("../models/subject.model")
 const Event=require("../models/event.model");
 const Assignment=require("../models/assignment.model");
+const AssignedSubject=require("../models/assignedSubject.model");
 
 const studentController = {
   login: async (req, res) => {
@@ -58,6 +59,11 @@ const studentController = {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"}); 
     }
+  },
+  subject: async (req,res) =>{
+    const studentId=req.userId;
+    const subject=await AssignedSubject.findOne({student:studentId}).populate('subject');
+    res.status(200).json({subject:subject.subject});
   }
 };
 
