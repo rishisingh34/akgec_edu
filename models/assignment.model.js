@@ -11,11 +11,9 @@ const assignmentSchema=mongoose.Schema({
         require:true
     },
     section:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Section",
         require:true
-    },
-    semester:{
-        type: Number
     }
 })
 

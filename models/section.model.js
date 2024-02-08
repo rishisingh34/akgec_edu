@@ -11,6 +11,9 @@ const sectionSchema = new mongoose.Schema({
   semester : {
     type : Number 
   },
+  batch:{
+    type:String
+  }
 });
 
 module.exports = mongoose.model("Section", sectionSchema);
