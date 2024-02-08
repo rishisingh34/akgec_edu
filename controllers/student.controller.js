@@ -2,6 +2,7 @@ const Student = require("../models/student.model");
 const Token = require("../middlewares/token.middleware");
 const Attendance = require("../models/attendance.model") ;
 const Subject=require("../models/subject.model")
+const Section=require("../models/section.model")
 const Event=require("../models/event.model");
 const Assignment=require("../models/assignment.model");
 const AssignedSubject=require("../models/assignedSubject.model");
@@ -42,11 +43,27 @@ const studentController = {
         { $lookup: { from: "subjects", localField: "subject", foreignField: "_id", as: "subjectDetails" } },
         { $unwind: "$subjectDetails" },
         { $sort: { date: 1 } },
-        { $group: { _id: "$subjectDetails", attendance: { $push: "$$ROOT" } } }, 
+        { $group: 
+          { _id: "$subjectDetails", 
+            totalClasses: { $sum: 1 }, 
+            totalPresent: { 
+              $sum: { 
+                $cond: { 
+                  if: { $or: [ "$attended", "$isAc" ] }, 
+                  then: 1, 
+                  else: 0 
+                }
+              }
+            },
+            attendance: { $push: "$$ROOT" } 
+          } 
+        }, 
         {
           $project:{
-            subject: "$_id", 
-            attendance: 1
+            subject: "$_id.name", 
+            attendance: 1,
+            totalClasses: 1,
+            totalPresent: 1
           }
         },
         {
@@ -92,7 +109,16 @@ const studentController = {
     res.status(200).json({subject:subject.subject});
   },
   timetable: async(req,res) =>{
-    const studentId=req.userId;
+    try
+    {
+      const studentId=req.userId;
+      const student=await Student.findOne({_id: studentId});
+      const timetable=await Timetable.findOne({section: student.section});
+      res.status(200).json({timetable:timetable.timetableUrl});
+    }
+    catch(err){
+      res.status(500).json({message:"internal server error."});
+    }
   }
 };
 
