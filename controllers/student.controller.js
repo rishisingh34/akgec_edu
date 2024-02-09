@@ -87,7 +87,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const assignment=await Assignment.find({section: student.section}).populate('subject').populate('section').select('-_id');
+      const assignment=await Assignment.find({section: student.section}).populate('subject').select('-_id').select('-section');
       res.status(200).json({assignment});
     } catch (err) {
       console.log(err) ;
