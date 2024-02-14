@@ -42,7 +42,10 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Documents",
   },
-  
+  awardsAndAchievements: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AwardsAndAchievements",
+  },
 });
 
 module.exports = mongoose.model("Student", studentSchema);
