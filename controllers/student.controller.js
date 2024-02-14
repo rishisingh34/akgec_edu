@@ -10,6 +10,11 @@ const {ObjectId}=mongoose.Types;
 const Subject = require("../models/subject.model");
 const Teacher = require("../models/teacher.model");
 const Section = require("../models/section.model");
+const personalInfo = require("../models/personalInfo.model");
+const ContactDetails = require("../models/contactDetail.model");
+const GuardianInfo = require("../models/guardianInfo.model");
+const AwardsAndAchievements = require("../models/awardsAndAchievements.model");
+const Documents = require("../models/document.model");
 
 const studentController = {
   login: async (req, res) => {
@@ -131,7 +136,7 @@ const studentController = {
     try {
       const studentId = req.userId;
       const studentPersonalInfo = await Student.findOne({ _id: studentId }).populate('personalInfo');
-      return res.status(200).json({ studentPersonalInfo });
+      return res.status(200).json({ personalInfo :  studentPersonalInfo.personalInfo });
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});
@@ -141,7 +146,7 @@ const studentController = {
     try {
       const studentId = req.userId;
       const studentContactDetails = await Student.findOne({ _id: studentId }).populate('contactDetails');
-      return res.status(200).json({ studentContactDetails });
+      return res.status(200).json({ contactDetails :  studentContactDetails.contactDetails });
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});
@@ -151,7 +156,7 @@ const studentController = {
     try {
       const studentId = req.userId;
       const studentGuardianInfo = await Student.findOne({ _id: studentId }).populate('guardianInfo');
-      return res.status(200).json({ studentGuardianInfo });
+      return res.status(200).json({ parentsInfo : studentGuardianInfo.guardianInfo });
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});
@@ -161,7 +166,7 @@ const studentController = {
     try {
       const studentId = req.userId;
       const studentAwards = await Student.findOne({ _id: studentId }).populate('awardsAndAchievements');
-      return res.status(200).json({ studentAwards });
+      return res.status(200).json({ awardsAndAchievements : studentAwards.awardsAndAchievements });
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});
@@ -171,7 +176,7 @@ const studentController = {
     try {
       const studentId = req.userId;
       const documents = await Student.findOne({ _id: studentId }).populate('documents');
-      return res.status(200).json({ documents });
+      return res.status(200).json({ documents :  documents.documents });
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});

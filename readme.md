@@ -255,13 +255,24 @@ Feel free to copy and paste these Markdown sections into your README file. Adjus
 **Response Body:**
 ```json
 {
-  "studentPersonalInfo": {
-    "firstName": "John",
-    "lastName": "Doe",
-    "dateOfBirth": "1998-05-15",
-    "gender": "Male",
-    "address": "123 Main St, Cityville, XYZ"
-  }
+    "personalInfo": {
+        "_id": "65cd484be736507cfd0188d9",
+        "name": "Rishi Raj Singh",
+        "gender": "Male",
+        "dob": "2004-07-20",
+        "courseName": "Engineering",
+        "admissionDate": "2023-09-01",
+        "branch": "CSE AIML",
+        "semester": 3,
+        "admissionMode": "Entrance Exam",
+        "section": "CSE AIML 2",
+        "category": "General",
+        "domicileState": "State A",
+        "jeeRank": "77676",
+        "jeeRollNo": "ABCDE123",
+        "lateralEntry": "No",
+        "hostel": "Yes"
+    }
 }
 ```
 
@@ -277,15 +288,21 @@ Feel free to copy and paste these Markdown sections into your README file. Adjus
 **Response Body:**
 ```json
 {
-  "studentContactDetails": {
-    "email": "john.doe@example.com",
-    "phone": "+1234567890",
-    "emergencyContact": {
-      "name": "Jane Doe",
-      "relationship": "Mother",
-      "phone": "+1987654321"
+    "contactDetails": {
+        "_id": "65cd493ee736507cfd0188fb",
+        "email": "example1@example.com",
+        "mobNo": "+1234567890",
+        "alternateEmail": "alt1@example.com",
+        "alternateMobNo": "+9876543210",
+        "permanentAddress": "123 Main St",
+        "presentAddress": "456 Elm St",
+        "permanentPincode": "12345",
+        "presentPincode": "54321",
+        "permanentState": "State1",
+        "presentState": "State2",
+        "permanentCountry": "Country1",
+        "presentCountry": "Country2"
     }
-  }
 }
 ```
 
@@ -300,12 +317,20 @@ Feel free to copy and paste these Markdown sections into your README file. Adjus
 **Response Body:**
 ```json
 {
-  "studentGuardianInfo": {
-    "guardianName": "Jane Doe",
-    "relationship": "Mother",
-    "email": "jane.doe@example.com",
-    "phone": "+1987654321"
-  }
+    "parentsInfo": {
+        "_id": "65cd485de736507cfd0188e4",
+        "fatherName": "Dhirendra Kumar",
+        "motherName": "Vibha Singh",
+        "fatherMobNo": "1234567890",
+        "motherMobNo": "0987654321",
+        "emailFather": "j.doe@example.com",
+        "emailMother": "j.doe@example.com",
+        "aadharNoFather": "1234 5678 9012",
+        "aadharNoMother": "9876 5432 1098",
+        "occupationFather": "Advocate",
+        "occupationMother": "Advocate",
+        "address": "123 Main Street, City, Country"
+    }
 }
 ```
 
@@ -320,12 +345,14 @@ Feel free to copy and paste these Markdown sections into your README file. Adjus
 **Response Body:**
 ```json
 {
-  "studentGuardianInfo": {
-    "guardianName": "Jane Doe",
-    "relationship": "Mother",
-    "email": "jane.doe@example.com",
-    "phone": "+1987654321"
-  }
+    "awardsAndAchievements": {
+        "_id": "65cd49cfe736507cfd018903",
+        "studentId": "12345",
+        "awardName": "Science Fair First Prize",
+        "awardDescription": "Awarded first prize for innovative project in the annual science fair.",
+        "awardDate": "2023-05-20",
+        "awardImgUrl": "https://example.com/awards/science_fair.jpg"
+    }
 }
 ```
 
@@ -340,12 +367,7 @@ Feel free to copy and paste these Markdown sections into your README file. Adjus
 **Response Body:**
 ```json
 {
-  "studentGuardianInfo": {
-    "guardianName": "Jane Doe",
-    "relationship": "Mother",
-    "email": "jane.doe@example.com",
-    "phone": "+1987654321"
-  }
+
 }
 ```
 
@@ -360,5 +382,7 @@ Feel free to copy and paste these Markdown sections into your README file. Adjus
 
 **Request Body:**
 ```json
-
+{
+  "message": "Document uploaded successfully"
+}
 ```
