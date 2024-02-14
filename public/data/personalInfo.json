@@ -1,8 +1,8 @@
 [
   {
-    "name": "Student 1",
+    "name": "Rishi Raj Singh",
     "gender": "Male",
-    "dob": "2000-01-01",
+    "dob": "2004-07-20",
     "courseName": "Engineering",
     "admissionDate": "2023-09-01",
     "branch": "CSE AIML",
@@ -11,7 +11,7 @@
     "section": "CSE AIML 2",
     "category": "General",
     "domicileState": "State A",
-    "jeeRank": "12345",
+    "jeeRank": "77676",
     "jeeRollNo": "ABCDE123",
     "lateralEntry": "No",
     "hostel": "Yes"

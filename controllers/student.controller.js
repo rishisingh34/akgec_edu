@@ -7,6 +7,9 @@ const AssignedSubject=require("../models/assignedSubject.model");
 const Timetable=require("../models/timetable.model");
 const mongoose= require("mongoose");
 const {ObjectId}=mongoose.Types;
+const Subject = require("../models/subject.model");
+const Teacher = require("../models/teacher.model");
+const Section = require("../models/section.model");
 
 const studentController = {
   login: async (req, res) => {
