@@ -14,6 +14,16 @@ const assignmentSchema=mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Section",
         require:true
+    },
+    teacher:{
+        type:mongoose.Schema.ObjectId,
+        ref:"Teacher",
+    },
+    description:{
+        type:String,
+    },
+    deadline:{
+        type:String
     }
 })
 

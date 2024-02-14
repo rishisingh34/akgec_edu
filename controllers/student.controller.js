@@ -2,6 +2,7 @@ const Student = require("../models/student.model");
 const Token = require("../middlewares/token.middleware");
 const Attendance = require("../models/attendance.model") ;
 const Subject=require("../models/subject.model")
+const Teacher=require("../models/teacher.model")
 const Section=require("../models/section.model")
 const Event=require("../models/event.model");
 const Assignment=require("../models/assignment.model");
@@ -73,7 +74,6 @@ const studentController = {
             "attendance.student": 0, 
             "attendance.subject": 0,
             "attendance.subjectDetails":0,
-            "subject._id":0
           }
         }
       ]);
@@ -87,7 +87,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const assignment=await Assignment.find({section: student.section}).populate('subject').select('-_id').select('-section');
+      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select('-_id').select('-section');
       res.status(200).json({assignment});
     } catch (err) {
       console.log(err) ;
