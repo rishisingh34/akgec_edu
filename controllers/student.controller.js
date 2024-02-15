@@ -15,6 +15,7 @@ const ContactDetails = require("../models/contactDetail.model");
 const GuardianInfo = require("../models/guardianInfo.model");
 const AwardsAndAchievements = require("../models/awardsAndAchievements.model");
 const Documents = require("../models/document.model");
+const uploadOnCloudinary=require("../utils/cloudinary.util")
 
 const studentController = {
   login: async (req, res) => {

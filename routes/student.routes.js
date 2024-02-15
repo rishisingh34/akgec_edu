@@ -14,6 +14,6 @@ router.get("/profile/contactDetails", auth, studentController.contactDetails);
 router.get("/profile/parentInfo",auth,studentController.guardianInfo);
 router.get("/profile/awards",auth,studentController.awardsAndAchievements);
 router.get("/profile/documents",auth,studentController.documents);
-router.post("/profile/document:documentType",auth,upload.single('document'), studentController.uploadDocument);
+router.post("/profile/document/:documentType",auth,upload.single('document'), studentController.uploadDocument);
 
 module.exports = router;
