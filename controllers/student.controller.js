@@ -16,6 +16,7 @@ const GuardianInfo = require("../models/guardianInfo.model");
 const AwardsAndAchievements = require("../models/awardsAndAchievements.model");
 const Documents = require("../models/document.model");
 const uploadOnCloudinary=require("../utils/cloudinary.util")
+const Pdpattendance=require("../models/pdpattendance.model");
 
 const studentController = {
   login: async (req, res) => {
@@ -209,6 +210,44 @@ const studentController = {
     } catch(err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});
+    }
+  },
+  pdpAttendance: async(req,res)=>{
+    try
+    {
+      const studentId = new ObjectId(req.userId) ;
+      const pdpAttendance = await Pdpattendance.aggregate([
+        { $match: { student: studentId } }, 
+        { $sort: { date: 1 } },
+        { $group: 
+          { _id: null, 
+            totalClasses: { $sum: 1 }, 
+            totalPresent: { 
+              $sum: { 
+                $cond: { 
+                  if: { $or: [ "$attended", "$isAc" ] }, 
+                  then: 1, 
+                  else: 0 
+                }
+              }
+            },
+            attendance: { $push: {date:"$date",attended:"$attended",isAc:"$isAc"} } 
+          } 
+        }, 
+        {
+          $project:{ 
+            _id: 0,
+            attendance: 1,
+            totalClasses: 1,
+            totalPresent: 1
+          }
+        }
+      ]);
+      return res.status(200).json(pdpAttendance[0]);
+    }
+    catch(err)
+    {
+      res.status(500).json({message:"internal server error"});
     }
   }
 };
