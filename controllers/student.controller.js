@@ -177,8 +177,8 @@ const studentController = {
   documents : async (req, res) => {
     try {
       const studentId = req.userId;
-      const documents = await Student.findOne({ _id: studentId }).populate({path:'documents',select:'-_id'});
-      return res.status(200).json({ documents :  documents.documents });
+      const documents = await Documents.findOne({ student: studentId });
+      return res.status(200).json({ documents });
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});

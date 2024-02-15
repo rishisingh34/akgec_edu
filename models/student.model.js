@@ -38,10 +38,6 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "EducationalDetails",
   },
-  documents: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Documents",
-  },
   awardsAndAchievements: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "AwardsAndAchievements",
