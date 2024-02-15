@@ -23,9 +23,6 @@ const personalInfoSchema = new mongoose.Schema({
   semester : {  
     type : Number ,
   },
-  courseName : {
-    type : String 
-  },
   admissionMode : {
     type : String 
   },

@@ -39,4 +39,4 @@ const contactDetailsSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("contactDetails", contactDetailsSchema); 
+module.exports = mongoose.model("ContactDetails", contactDetailsSchema); 

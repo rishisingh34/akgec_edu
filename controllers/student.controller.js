@@ -7,6 +7,14 @@ const AssignedSubject=require("../models/assignedSubject.model");
 const Timetable=require("../models/timetable.model");
 const mongoose= require("mongoose");
 const {ObjectId}=mongoose.Types;
+const Subject = require("../models/subject.model");
+const Teacher = require("../models/teacher.model");
+const Section = require("../models/section.model");
+const personalInfo = require("../models/personalInfo.model");
+const ContactDetails = require("../models/contactDetail.model");
+const GuardianInfo = require("../models/guardianInfo.model");
+const AwardsAndAchievements = require("../models/awardsAndAchievements.model");
+const Documents = require("../models/document.model");
 
 const studentController = {
   login: async (req, res) => {
@@ -122,6 +130,84 @@ const studentController = {
     }
     catch(err){
       return res.status(500).json({message:"internal server error."});
+    }
+  },
+  personalInfo : async (req, res) => {
+    try {
+      const studentId = req.userId;
+      const studentPersonalInfo = await Student.findOne({ _id: studentId }).populate('personalInfo');
+      return res.status(200).json({ personalInfo :  studentPersonalInfo.personalInfo });
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"});
+    } 
+  },
+  contactDetails : async (req, res) => {
+    try {
+      const studentId = req.userId;
+      const studentContactDetails = await Student.findOne({ _id: studentId }).populate('contactDetails');
+      return res.status(200).json({ contactDetails :  studentContactDetails.contactDetails });
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"});
+    }
+  },
+  guardianInfo : async (req, res) => {
+    try {
+      const studentId = req.userId;
+      const studentGuardianInfo = await Student.findOne({ _id: studentId }).populate('guardianInfo');
+      return res.status(200).json({ parentsInfo : studentGuardianInfo.guardianInfo });
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"});
+    }
+  },
+  awardsAndAchievements : async (req, res) => {
+    try {
+      const studentId = req.userId;
+      const studentAwards = await Student.findOne({ _id: studentId }).populate('awardsAndAchievements');
+      return res.status(200).json({ awardsAndAchievements : studentAwards.awardsAndAchievements });
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"});
+    }
+  },
+  documents : async (req, res) => {
+    try {
+      const studentId = req.userId;
+      const documents = await Student.findOne({ _id: studentId }).populate('documents');
+      return res.status(200).json({ documents :  documents.documents });
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"});
+    }
+  },
+  uploadDocument : async (req, res) =>  {
+    try {
+      
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cloudinaryResponse = await uploadOnCloudinary(dataURI);
+      if (cloudinaryResponse.error || !cloudinaryResponse.secure_url) {
+        return res
+          .status(500)
+          .json({ message: "Failed to upload image to Cloudinary" });
+      }     
+      const studentId = req.userId;
+      const documentType = req.params.documentType;
+      await Student.findOneAndUpdate(
+        { _id: studentId },
+        {
+          $set: {
+            [`documents.${documentType}`]: cloudinaryResponse.secure_url,
+          },
+        },
+        { new: true }
+      );
+      return res.status(200).json({ message: "Document uploaded successfully" });
+    } catch(err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"});
     }
   }
 };
