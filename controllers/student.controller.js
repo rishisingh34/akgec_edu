@@ -196,16 +196,8 @@ const studentController = {
           .json({ message: "Failed to upload image to Cloudinary" });
       }     
       const studentId = req.userId;
-      const documentType = req.params.documentType;
-      await Student.findOneAndUpdate(
-        { _id: studentId },
-        {
-          $set: {
-            [`documents.${documentType}`]: cloudinaryResponse.secure_url,
-          },
-        },
-        { new: true }
-      );
+      const documentType = req.query.documentType;
+      await Documents.findOneAndUpdate({ student: studentId }, { [documentType]: cloudinaryResponse.secure_url } , { upsert: true });
       return res.status(200).json({ message: "Document uploaded successfully" });
     } catch(err) {
       console.log(err) ;
