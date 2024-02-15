@@ -112,7 +112,7 @@ const studentController = {
     try
     {
       const studentId=req.userId;
-      const subject=await AssignedSubject.findOne({student:studentId}).populate('subject');
+      const subject=await AssignedSubject.findOne({student:studentId}).populate({path:'subject',select:'-_id'});
       return res.status(200).json({subject:subject.subject});
     }
     catch(err)
@@ -135,7 +135,7 @@ const studentController = {
   personalInfo : async (req, res) => {
     try {
       const studentId = req.userId;
-      const studentPersonalInfo = await Student.findOne({ _id: studentId }).populate('personalInfo');
+      const studentPersonalInfo = await Student.findOne({ _id: studentId }).populate({path:'personalInfo',select:'-_id'});
       return res.status(200).json({ personalInfo :  studentPersonalInfo.personalInfo });
     } catch (err) {
       console.log(err) ;
@@ -145,7 +145,7 @@ const studentController = {
   contactDetails : async (req, res) => {
     try {
       const studentId = req.userId;
-      const studentContactDetails = await Student.findOne({ _id: studentId }).populate('contactDetails');
+      const studentContactDetails = await Student.findOne({ _id: studentId }).populate({path:'contactDetails',select:'-_id'});
       return res.status(200).json({ contactDetails :  studentContactDetails.contactDetails });
     } catch (err) {
       console.log(err) ;
@@ -155,7 +155,7 @@ const studentController = {
   guardianInfo : async (req, res) => {
     try {
       const studentId = req.userId;
-      const studentGuardianInfo = await Student.findOne({ _id: studentId }).populate('guardianInfo');
+      const studentGuardianInfo = await Student.findOne({ _id: studentId }).populate({path:'guardianInfo',select:'-_id'});
       return res.status(200).json({ parentsInfo : studentGuardianInfo.guardianInfo });
     } catch (err) {
       console.log(err) ;
@@ -165,7 +165,7 @@ const studentController = {
   awardsAndAchievements : async (req, res) => {
     try {
       const studentId = req.userId;
-      const studentAwards = await Student.findOne({ _id: studentId }).populate('awardsAndAchievements');
+      const studentAwards = await Student.findOne({ _id: studentId }).populate({path:'awardsAndAchievements',select:'-_id'});
       return res.status(200).json({ awardsAndAchievements : studentAwards.awardsAndAchievements });
     } catch (err) {
       console.log(err) ;
@@ -175,7 +175,7 @@ const studentController = {
   documents : async (req, res) => {
     try {
       const studentId = req.userId;
-      const documents = await Student.findOne({ _id: studentId }).populate('documents');
+      const documents = await Student.findOne({ _id: studentId }).populate({path:'documents',select:'-_id'});
       return res.status(200).json({ documents :  documents.documents });
     } catch (err) {
       console.log(err) ;
