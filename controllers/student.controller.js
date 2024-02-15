@@ -177,7 +177,7 @@ const studentController = {
   documents : async (req, res) => {
     try {
       const studentId = req.userId;
-      const documents = await Documents.findOne({ student: studentId }).select('-_id').select('-_student');
+      const documents = await Documents.findOne({ student: studentId }).select('-_id').select('-student');
       return res.status(200).json({ documents });
     } catch (err) {
       console.log(err) ;
