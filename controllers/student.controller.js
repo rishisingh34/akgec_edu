@@ -82,7 +82,8 @@ const studentController = {
             "attendance.subject": 0,
             "attendance.subjectDetails":0,
           }
-        }
+        },
+        { $sort: { subject: 1 } }
       ]);
       return res.status(200).json(attendance);
     } catch (err) {
