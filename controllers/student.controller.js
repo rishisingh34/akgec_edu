@@ -94,7 +94,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select('-_id').select('-section');
+      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section']);
       return res.status(200).json({assignment});
     } catch (err) {
       console.log(err) ;
@@ -177,7 +177,7 @@ const studentController = {
   documents : async (req, res) => {
     try {
       const studentId = req.userId;
-      const documents = await Documents.findOne({ student: studentId }).select('-_id').select('-student');
+      const documents = await Documents.findOne({ student: studentId }).select(['-_id','-student','-__v']);
       return res.status(200).json({ documents });
     } catch (err) {
       console.log(err) ;
@@ -186,7 +186,12 @@ const studentController = {
   },
   uploadDocument : async (req, res) =>  {
     try {
-      
+      const documentType = req.query.documentType;
+      const documents=["studentPhoto","aadharCard","tenthMarksheet","twelfthMarksheet","allotmentLetter","domicileCertificate","covidVaccinationCertificate","migrationCertificate","characterCertificate","casteCertificate","ewsCertificate","gapCertificate","incomeCertificate","medicalCertificate"];
+      if(!documents.includes(documentType))
+      {
+        return res.status(400).json({message:"document type invalid"});
+      }
       const b64 = Buffer.from(req.file.buffer).toString("base64");
       let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
       const cloudinaryResponse = await uploadOnCloudinary(dataURI);
@@ -196,7 +201,6 @@ const studentController = {
           .json({ message: "Failed to upload image to Cloudinary" });
       }     
       const studentId = req.userId;
-      const documentType = req.query.documentType;
       await Documents.findOneAndUpdate({ student: studentId }, { [documentType]: cloudinaryResponse.secure_url } , { upsert: true });
       return res.status(200).json({ message: "Document uploaded successfully" });
     } catch(err) {
