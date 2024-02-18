@@ -17,6 +17,9 @@ const AwardsAndAchievements = require("../models/awardsAndAchievements.model");
 const Documents = require("../models/document.model");
 const uploadOnCloudinary=require("../utils/cloudinary.util")
 const Pdpattendance=require("../models/pdpattendance.model");
+const Exam=require("../models/exam.model")
+const ExamTimetable=require("../models/examTimetable.model");
+const Result=require("../models/result.model")
 
 const studentController = {
   login: async (req, res) => {
@@ -188,7 +191,7 @@ const studentController = {
   uploadDocument : async (req, res) =>  {
     try {
       const documentType = req.query.documentType;
-      const documents=["studentPhoto","aadharCard","tenthMarksheet","twelfthMarksheet","allotmentLetter","domicileCertificate","covidVaccinationCertificate","migrationCertificate","characterCertificate","casteCertificate","ewsCertificate","gapCertificate","incomeCertificate","medicalCertificate"];
+      const documents=["studentPhoto","aadharCard","tenthMarksheet","twelfthMarksheet","allotmentLetter","domicileCertificate","covidVaccinationCertificate","migrationCertificate","characterCertificate","casteCertificate","ewsCertificate","gapCertificate","incomeCertificate","medicalCertificate","seatAllotmentLetter"];
       if(!documents.includes(documentType))
       {
         return res.status(400).json({message:"document type invalid"});
@@ -244,8 +247,41 @@ const studentController = {
     }
     catch(err)
     {
-      res.status(500).json({message:"internal server error"});
+      return res.status(500).json({message:"internal server error"});
     }
+  },
+  examTimetable: async(req,res)=>{
+    try
+    {
+      const studentId=req.userId;
+      const student=await Student.findOne({_id: studentId}).populate('section');
+      const examTimetable= await ExamTimetable.findOne({batch: student.section.batch}).select(["-_id","-batch"]);
+      res.status(200).json({examTimetable});
+    }
+    catch(err)
+    {
+      res.status(500).json({message:"Internal Server error"});
+    }
+  },
+  result: async(req,res)=>{
+    const studentId=new ObjectId(req.userId);
+    const result= await Result.aggregate([
+      {$match: {student: studentId}},
+      {$lookup: { from: "subjects", localField: "subject", foreignField: "_id", as: "subjectDetails" }},
+      {$lookup: { from: "exams", localField: "exam", foreignField: "_id", as: "examDetails" }},
+      {$unwind: "$subjectDetails"},
+      {$unwind: "$examDetails"},
+      {$group: {
+        _id: "$examDetails",
+        result: {$push: {subject: "$subjectDetails.name", maximumMarks:"$maximumMarks", marksObtained:"$marksObtained"}}
+      }},
+      {$project:{
+        exam:"$_id.examName",
+        result: 1,
+        _id: 0
+      }}
+    ]);
+    res.status(200).json(result)
   }
 };
 

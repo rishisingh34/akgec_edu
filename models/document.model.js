@@ -47,6 +47,9 @@ const documentsSchema = new mongoose.Schema({
   medicalCertificate : {
     type : String 
   },
+  seatAllotmentLetter:{
+    type: String
+  }
 });
 
 module.exports = mongoose.model("Documents", documentsSchema);
