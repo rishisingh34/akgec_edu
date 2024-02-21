@@ -18,5 +18,6 @@ router.post("/profile/document",auth,upload, studentController.uploadDocument);
 router.get("/pdpattendance",auth,studentController.pdpAttendance);
 router.get("/exam/timetable",auth,studentController.examTimetable);
 router.get("/exam/result",auth,studentController.result);
+router.get("/classNotes",auth,studentController.classNotes);
 
 module.exports = router;

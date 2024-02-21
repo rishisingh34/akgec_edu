@@ -20,6 +20,7 @@ const Pdpattendance=require("../models/pdpattendance.model");
 const Exam=require("../models/exam.model")
 const ExamTimetable=require("../models/examTimetable.model");
 const Result=require("../models/result.model")
+const ClassNotes=require("../models/classNotes.model")
 
 const studentController = {
   login: async (req, res) => {
@@ -282,6 +283,17 @@ const studentController = {
       }}
     ]);
     res.status(200).json(result)
+  },
+  classNotes : async (req,res)=>{
+    try{
+      const studentId=req.userId;
+      const student=await Student.findOne({_id:studentId});
+      const classNotes=await ClassNotes.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section']);
+      return res.status(200).json({classNotes});
+    } catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"}); 
+    }
   }
 };
 
