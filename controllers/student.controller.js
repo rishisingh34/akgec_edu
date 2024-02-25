@@ -1,28 +1,28 @@
-const Student = require("../models/student.model"); 
+const Student = require("../models/studentModels/student.model"); 
 const Token = require("../middlewares/token.middleware");
-const Attendance = require("../models/attendance.model") ;
-const Event=require("../models/event.model");
-const Assignment=require("../models/assignment.model");
-const AssignedSubject=require("../models/assignedSubject.model");
-const Timetable=require("../models/timetable.model");
+const Attendance = require("../models/studentModels/attendance.model") ;
+const Event=require("../models/studentModels/event.model");
+const Assignment=require("../models/studentModels/assignment.model");
+const AssignedSubject=require("../models/studentModels/assignedSubject.model");
+const Timetable=require("../models/studentModels/timetable.model");
 const mongoose= require("mongoose");
 const {ObjectId}=mongoose.Types;
-const Subject = require("../models/subject.model");
-const Teacher = require("../models/teacher.model");
-const Section = require("../models/section.model");
-const personalInfo = require("../models/personalInfo.model");
-const ContactDetails = require("../models/contactDetail.model");
-const GuardianInfo = require("../models/guardianInfo.model");
-const AwardsAndAchievements = require("../models/awardsAndAchievements.model");
-const Documents = require("../models/document.model");
+const Subject = require("../models/studentModels/subject.model");
+const Teacher = require("../models/teacherModels/teacher.model");
+const Section = require("../models/studentModels/section.model");
+const personalInfo = require("../models/studentModels/personalInfo.model");
+const ContactDetails = require("../models/studentModels/contactDetail.model");
+const GuardianInfo = require("../models/studentModels/guardianInfo.model");
+const AwardsAndAchievements = require("../models/studentModels/awardsAndAchievements.model");
+const Documents = require("../models/studentModels/document.model");
 const uploadOnCloudinary=require("../utils/cloudinary.util")
-const Pdpattendance=require("../models/pdpattendance.model");
-const Exam=require("../models/exam.model")
-const ExamTimetable=require("../models/examTimetable.model");
-const Result=require("../models/result.model")
-const ClassNotes=require("../models/classNotes.model")
-const AssignmentSolution=require("../models/assignmentSolution.model")
-const Feedback=require("../models/feedback.model")
+const Pdpattendance=require("../models/studentModels/pdpattendance.model");
+const Exam=require("../models/studentModels/exam.model")
+const ExamTimetable=require("../models/studentModels/examTimetable.model");
+const Result=require("../models/studentModels/result.model")
+const ClassNotes=require("../models/studentModels/classNotes.model")
+const AssignmentSolution=require("../models/studentModels/assignmentSolution.model")
+const Feedback=require("../models/studentModels/feedback.model")
 
 const studentController = {
   login: async (req, res) => {
@@ -101,7 +101,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select('-section');
+      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-section','-__v']);
       return res.status(200).json({assignment});
     } catch (err) {
       console.log(err) ;
@@ -304,7 +304,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const classNotes=await ClassNotes.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section']);
+      const classNotes=await ClassNotes.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section',"-__v"]);
       return res.status(200).json({classNotes});
     } catch (err) {
       console.log(err) ;
