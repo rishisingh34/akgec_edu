@@ -22,6 +22,7 @@ const ExamTimetable=require("../models/examTimetable.model");
 const Result=require("../models/result.model")
 const ClassNotes=require("../models/classNotes.model")
 const AssignmentSolution=require("../models/assignmentSolution.model")
+const Feedback=require("../models/feedback.model")
 
 const studentController = {
   login: async (req, res) => {
@@ -116,16 +117,24 @@ const studentController = {
       return res.status(500).json({message : "Internal Server Error"}); 
     }
   },
-  subject: async (req,res) =>{
-    try
-    {
-      const studentId=req.userId;
-      const subject=await AssignedSubject.findOne({student:studentId}).populate({path:'subject',select:'-_id'});
-      return res.status(200).json({subject:subject.subject});
-    }
-    catch(err)
-    {
-      return res.status(500).json({message:"Internal Server error."});
+  subject: async (req, res) => {
+    try {
+        const studentId = req.userId;
+        const assignedSubjects = await AssignedSubject.findOne({ student: studentId })
+            .populate('subjects.subject', '-_id')
+            .populate('subjects.teacher', 'name -_id'); // Populate both subject and teacher
+        
+        const subjects = assignedSubjects.subjects.map(item => {
+            return {
+                subject: item.subject,
+                teacher: item.teacher.name // Access the teacher's name
+            };
+        });
+
+        return res.status(200).json({ subjects });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Internal Server error." });
     }
   },
   timetable: async(req,res) =>{
@@ -326,6 +335,18 @@ const studentController = {
     catch(err)
     {
       res.status(500).json({message:"internal server error."});
+    }
+  },
+  feedback : async (req,res)=>{
+    try {
+      const studentId = req.userId;
+      const { theorySubjectFeedbacks , labFeedbacks , labAssistantFeedbacks } = req.body;
+      const feedback = new Feedback({ student: studentId, theorySubjectFeedbacks , labFeedbacks , labAssistantFeedbacks});  
+      await feedback.save();
+      return res.status(200).json({ message: "Feedback submitted successfully" });
+    } catch(err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"});
     }
   }
 };
