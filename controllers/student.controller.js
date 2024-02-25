@@ -101,7 +101,22 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-section','-__v']);
+      const assignments=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select('-section');
+      const assignment = assignments.map(item => { 
+        return {
+          assignmentId: item._id,
+          subject: {
+              name: item.subject.name,
+              code: item.subject.code
+          },
+          assignment: item.assignment,
+          teacher: {
+            name: item.teacher.name
+          },
+          deadline: item.deadline,
+          description: item.description
+        };
+      });
       return res.status(200).json({assignment});
     } catch (err) {
       console.log(err) ;
@@ -304,7 +319,19 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const classNotes=await ClassNotes.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section',"-__v"]);
+      const classNote=await ClassNotes.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section']);
+      const classNotes = classNote.map(item => { 
+        return {
+          subject: {
+              name: item.subject.name,
+              code: item.subject.code
+          },
+          classnotes: item.classNotes,
+          teacher: {
+            name: item.teacher.name
+          },
+        };
+      });
       return res.status(200).json({classNotes});
     } catch (err) {
       console.log(err) ;
