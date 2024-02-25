@@ -14,10 +14,12 @@ router.get("/profile/contactDetails", auth, studentController.contactDetails);
 router.get("/profile/parentInfo",auth,studentController.guardianInfo);
 router.get("/profile/awards",auth,studentController.awardsAndAchievements);
 router.get("/profile/documents",auth,studentController.documents);
-router.post("/profile/document",auth,upload, studentController.uploadDocument);
+router.post("/profile/document",auth,upload.documents, studentController.uploadDocument);
 router.get("/pdpattendance",auth,studentController.pdpAttendance);
 router.get("/exam/timetable",auth,studentController.examTimetable);
 router.get("/exam/result",auth,studentController.result);
 router.get("/classNotes",auth,studentController.classNotes);
+router.post("/assignment/uploadSolution",auth,upload.file,studentController.uploadAssignmentSolution);
+router.get("/assignment/solutions",auth,studentController.assignmentSolutions);
 
 module.exports = router;

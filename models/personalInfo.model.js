@@ -14,6 +14,12 @@ const personalInfoSchema = new mongoose.Schema({
   courseName : {
     type : String ,
   },
+  studentNumber:{
+    type: String
+  },
+  universityRollNumber:{
+    type: String
+  },
   admissionDate : {
     type : String ,
   },

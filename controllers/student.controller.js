@@ -21,6 +21,7 @@ const Exam=require("../models/exam.model")
 const ExamTimetable=require("../models/examTimetable.model");
 const Result=require("../models/result.model")
 const ClassNotes=require("../models/classNotes.model")
+const AssignmentSolution=require("../models/assignmentSolution.model")
 
 const studentController = {
   login: async (req, res) => {
@@ -99,7 +100,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section']);
+      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select('-section');
       return res.status(200).json({assignment});
     } catch (err) {
       console.log(err) ;
@@ -293,6 +294,38 @@ const studentController = {
     } catch (err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"}); 
+    }
+  },
+  uploadAssignmentSolution : async (req,res)=>{
+    try
+    {
+      const studentId=req.userId;
+      const assignmentId=req.query.assignmentId;
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cloudinaryResponse = await uploadOnCloudinary(dataURI);
+      const assignmentSolution=new AssignmentSolution({
+        student: studentId,
+        assignmentId: assignmentId,
+        solution: cloudinaryResponse.secure_url
+      })
+      await assignmentSolution.save();
+      res.status(200).json({message:"assignment solution uploaded successfully."})
+    }
+    catch(err)
+    {
+      res.status(500).json({message:"internal server error."});
+    }
+  },
+  assignmentSolutions: async (req,res)=>{
+    try{
+    const studentId=req.userId;
+    const assignmentSolutions=await AssignmentSolution.find({student: studentId}).select(['assignmentId','solution','-_id']);
+    res.status(200).json({assignmentSolutions});
+    }
+    catch(err)
+    {
+      res.status(500).json({message:"internal server error."});
     }
   }
 };
