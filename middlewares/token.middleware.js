@@ -1,6 +1,6 @@
 const {ACCESS_TOKEN_SECRET} = require('../config/env.config');
 const jwt = require("jsonwebtoken");
-const Student  = require("../models/student.model");
+const Student  = require("../models/studentModels/student.model");
 
 const Token = {
   signAccessToken: (id) => {
