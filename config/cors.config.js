@@ -5,6 +5,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://150.50.1.50:5173",
     "https://edumarshal-web.vercel.app",
+    "http://192.168.137.1:5173"
   ],
   // origin : '*',
   credentials: true,
