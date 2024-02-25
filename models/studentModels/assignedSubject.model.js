@@ -7,16 +7,16 @@ const assignedSubjectSchema=mongoose.Schema({
         require:true
     },
     subject:[{
-        //subject : {
+        subject : {
             type:mongoose.Schema.Types.ObjectId,
             ref:'Subject',
             require:true
-        // },
-        // teacher :{
-        //     type:mongoose.Schema.Types.ObjectId,
-        //     ref:'Teacher',
-        //     require:true
-        // },
+        },
+        teacher :{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Teacher',
+            require:true
+        },
     }],
 })
 
