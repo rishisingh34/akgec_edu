@@ -33,7 +33,6 @@ const teacherController={
     sectionStudents: async (req, res) => {
         try {           
             const section = await Section.findOne(req.query).populate({path : 'student', select : '-_id -dob -password -section -personalInfo -guardianInfo -contactDetails -educationalDetails -awardsAndAchievements'});      
-            console.log(section.student);
             return res.status(200).json({ sectionName : section.sectionName, students : section.student, semester : section.semester, batch : section.batch});
         } catch (err) {
             console.log(err);
