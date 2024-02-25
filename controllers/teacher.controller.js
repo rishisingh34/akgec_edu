@@ -42,12 +42,9 @@ const teacherController={
     },
     uploadNotes : async (req, res) => {
         try {
-            const {section , subject } = req.query ;
+            const {sectionId , subject } = req.query ;
             const teacherId = req.userId ;
-            const [sectionId, subjectId] = await Promise.all([
-                Section.findOne({ sectionName: section }),
-                Subject.findOne({ name : subject })
-            ]);
+            const subjectId = await Subject.findOne({name: subject});
             const b64 = Buffer.from(req.file.buffer).toString("base64");
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
             const cloudinaryResponse = await uploadOnCloudinary(dataURI);
