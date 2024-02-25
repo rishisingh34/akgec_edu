@@ -52,9 +52,9 @@ const teacherController={
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
             const cloudinaryResponse = await uploadOnCloudinary(dataURI);
             const classNotes = new ClassNotes({
-                subjectId,
+                subject : subjectId,
                 classNotes : cloudinaryResponse.secure_url,
-                sectionId ,
+                section : sectionId ,
                 teacher : teacherId
             });
             await classNotes.save() ;
