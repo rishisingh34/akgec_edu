@@ -7,12 +7,23 @@ const teacherSchema=mongoose.Schema({
     },
     email:{
         type:String,
-        require:true
+        require:true,
+        unique:true
     },
-    password : {
+    password:{
         type:String,
         require:true
     },
+    subjectSection:[{
+        section:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Section"
+        },
+        subject:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Subject"
+        }
+    }]
 })
 
 module.exports=mongoose.model("Teacher",teacherSchema);

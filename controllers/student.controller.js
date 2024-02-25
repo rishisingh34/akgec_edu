@@ -267,32 +267,38 @@ const studentController = {
       const studentId=req.userId;
       const student=await Student.findOne({_id: studentId}).populate('section');
       const examTimetable= await ExamTimetable.findOne({batch: student.section.batch}).select(["-_id","-batch"]);
-      res.status(200).json({examTimetable});
+      return res.status(200).json({examTimetable});
     }
     catch(err)
     {
-      res.status(500).json({message:"Internal Server error"});
+      return res.status(500).json({message:"Internal Server error"});
     }
   },
   result: async(req,res)=>{
-    const studentId=new ObjectId(req.userId);
-    const result= await Result.aggregate([
-      {$match: {student: studentId}},
-      {$lookup: { from: "subjects", localField: "subject", foreignField: "_id", as: "subjectDetails" }},
-      {$lookup: { from: "exams", localField: "exam", foreignField: "_id", as: "examDetails" }},
-      {$unwind: "$subjectDetails"},
-      {$unwind: "$examDetails"},
-      {$group: {
-        _id: "$examDetails",
-        result: {$push: {subject: "$subjectDetails.name", maximumMarks:"$maximumMarks", marksObtained:"$marksObtained"}}
-      }},
-      {$project:{
-        exam:"$_id.examName",
-        result: 1,
-        _id: 0
-      }}
-    ]);
-    res.status(200).json(result)
+    try{
+      const studentId=new ObjectId(req.userId);
+      const result= await Result.aggregate([
+        {$match: {student: studentId}},
+        {$lookup: { from: "subjects", localField: "subject", foreignField: "_id", as: "subjectDetails" }},
+        {$lookup: { from: "exams", localField: "exam", foreignField: "_id", as: "examDetails" }},
+        {$unwind: "$subjectDetails"},
+        {$unwind: "$examDetails"},
+        {$group: {
+          _id: "$examDetails",
+          result: {$push: {subject: "$subjectDetails.name", maximumMarks:"$maximumMarks", marksObtained:"$marksObtained"}}
+        }},
+        {$project:{
+          exam:"$_id.examName",
+          result: 1,
+          _id: 0
+        }}
+      ]);
+      return res.status(200).json(result)
+    }
+    catch (err) {
+      console.log(err) ;
+      return res.status(500).json({message : "Internal Server Error"}); 
+    }
   },
   classNotes : async (req,res)=>{
     try{
@@ -319,22 +325,22 @@ const studentController = {
         solution: cloudinaryResponse.secure_url
       })
       await assignmentSolution.save();
-      res.status(200).json({message:"assignment solution uploaded successfully."})
+      return res.status(200).json({message:"assignment solution uploaded successfully."})
     }
     catch(err)
     {
-      res.status(500).json({message:"internal server error."});
+      return res.status(500).json({message:"internal server error."});
     }
   },
   assignmentSolutions: async (req,res)=>{
     try{
-    const studentId=req.userId;
-    const assignmentSolutions=await AssignmentSolution.find({student: studentId}).select(['assignmentId','solution','-_id']);
-    res.status(200).json({assignmentSolutions});
+      const studentId=req.userId;
+      const assignmentSolutions=await AssignmentSolution.find({student: studentId}).select(['assignmentId','solution','-_id']);
+      return res.status(200).json({assignmentSolutions});
     }
     catch(err)
     {
-      res.status(500).json({message:"internal server error."});
+      return res.status(500).json({message:"internal server error."});
     }
   },
   feedback : async (req,res)=>{

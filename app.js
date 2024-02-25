@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser') ;
 const {sendMail} = require('./utils/mailer.util') ;
 
 const studentRoutes = require('./routes/student.routes') ;
+const teacherRoutes=require("./routes/teacher.routes");
 
 app.set('trust proxy', true) ;
 app.use(cookieParser()) ;
@@ -15,6 +16,7 @@ app.use(handleCors);
 connectDB() ;
 
 app.use('/v1/student', studentRoutes) ;
+app.use('/v1/teacher',teacherRoutes);
 app.post('/sendMail', async (req, res) => {
   try {
     const {name, email } = req.body ;
