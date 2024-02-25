@@ -122,12 +122,12 @@ const studentController = {
         const studentId = req.userId;
         const assignedSubjects = await AssignedSubject.findOne({ student: studentId })
             .populate('subjects.subject', '-_id')
-            .populate('subjects.teacher', 'name -_id'); // Populate both subject and teacher
+            .populate('subjects.teacher', 'name -_id'); 
         
         const subjects = assignedSubjects.subjects.map(item => {
             return {
                 subject: item.subject,
-                teacher: item.teacher.name // Access the teacher's name
+                teacher: item.teacher.name 
             };
         });
 
