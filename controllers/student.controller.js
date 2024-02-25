@@ -120,18 +120,18 @@ const studentController = {
   subject: async (req, res) => {
     try {
         const studentId = req.userId;
-        const assignedSubjects = await AssignedSubject.findOne({ student: studentId })
-            .populate('subjects.subject', '-_id')
-            .populate('subjects.teacher', 'name -_id'); 
+        const subject = await AssignedSubject.findOne({ student: studentId })
+            .populate({path:'subject', select:'-_id'}).select(['-_id','-student']);
+          //  .populate('subjects.teacher', 'name -_id'); 
         
-        const subjects = assignedSubjects.subjects.map(item => {
-            return {
-                subject: item.subject,
-                teacher: item.teacher.name 
-            };
-        });
+        // const subjects = assignedSubjects.subjects.map(item => {
+        //     return {
+        //         subject: item.subject,
+        //         teacher: item.teacher.name 
+        //     };
+        // });
 
-        return res.status(200).json({ subjects });
+        return res.status(200).json(subject);
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Internal Server error." });
