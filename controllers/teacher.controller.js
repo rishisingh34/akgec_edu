@@ -3,6 +3,7 @@ const Token=require("../middlewares/token.middleware")
 const Section= require("../models/studentModels/section.model");
 const Subject = require("../models/studentModels/subject.model");
 const ClassNotes = require("../models/studentModels/classNotes.model");
+const  uploadOnCloudinary = require("../utils/cloudinary.util");
 
 const teacherController={
     login: async(req,res)=>{
