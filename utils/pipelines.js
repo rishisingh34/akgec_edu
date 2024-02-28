@@ -17,7 +17,7 @@ const pipelines={
                     }
                   }
                 },
-                attendance: { $push: {date:"$date", attended:"$attended", isAc:"isAc"} } 
+                attendance: { $push: {date:"$date", attended:"$attended", isAc:"$isAc"} } 
               } 
             }, 
             {
