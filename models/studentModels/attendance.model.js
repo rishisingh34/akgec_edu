@@ -22,6 +22,10 @@ const attendanceSchema = new mongoose.Schema({
   isAc: {
     type: Boolean,
     default: false
+  },
+  markedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Teacher"
   }
 });
 

@@ -5,8 +5,7 @@ const Event=require("../models/studentModels/event.model");
 const Assignment=require("../models/studentModels/assignment.model");
 const AssignedSubject=require("../models/studentModels/assignedSubject.model");
 const Timetable=require("../models/studentModels/timetable.model");
-const mongoose= require("mongoose");
-const {ObjectId}=mongoose.Types;
+const {ObjectId}=require("mongoose").Types;
 const Subject = require("../models/studentModels/subject.model");
 const Teacher = require("../models/teacherModels/teacher.model");
 const Section = require("../models/studentModels/section.model");
@@ -23,6 +22,7 @@ const Result=require("../models/studentModels/result.model")
 const ClassNotes=require("../models/studentModels/classNotes.model")
 const AssignmentSolution=require("../models/studentModels/assignmentSolution.model")
 const Feedback=require("../models/studentModels/feedback.model")
+const pipelines=require("../utils/pipelines");
 
 const studentController = {
   login: async (req, res) => {
@@ -51,46 +51,7 @@ const studentController = {
   attendance : async (req,res ) => {
     try {
       const studentId = new ObjectId(req.userId) ;
-     // const attendance = await Attendance.find({student : studentId }).populate('subject') ;
-      const attendance = await Attendance.aggregate([
-        { $match: { student: studentId } }, 
-        { $lookup: { from: "subjects", localField: "subject", foreignField: "_id", as: "subjectDetails" } },
-        { $unwind: "$subjectDetails" },
-        { $sort: { date: 1 } },
-        { $group: 
-          { _id: "$subjectDetails", 
-            totalClasses: { $sum: 1 }, 
-            totalPresent: { 
-              $sum: { 
-                $cond: { 
-                  if: { $or: [ "$attended", "$isAc" ] }, 
-                  then: 1, 
-                  else: 0 
-                }
-              }
-            },
-            attendance: { $push: "$$ROOT" } 
-          } 
-        }, 
-        {
-          $project:{
-            subject: "$_id.name", 
-            attendance: 1,
-            totalClasses: 1,
-            totalPresent: 1
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            "attendance._id": 0, 
-            "attendance.student": 0, 
-            "attendance.subject": 0,
-            "attendance.subjectDetails":0,
-          }
-        },
-        { $sort: { subject: 1 } }
-      ]);
+      const attendance = await Attendance.aggregate(pipelines.attendancePipeline(studentId));
       return res.status(200).json(attendance);
     } catch (err) {
       console.log(err) ;
@@ -101,22 +62,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const assignments=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select('-section');
-      const assignment = assignments.map(item => { 
-        return {
-          assignmentId: item._id,
-          subject: {
-              name: item.subject.name,
-              code: item.subject.code
-          },
-          assignment: item.assignment,
-          teacher: {
-            name: item.teacher.name
-          },
-          deadline: item.deadline,
-          description: item.description
-        };
-      });
+      const assignment=await Assignment.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'name -_id'}).select(['-section','-__v']);
       return res.status(200).json({assignment});
     } catch (err) {
       console.log(err) ;
@@ -224,12 +170,7 @@ const studentController = {
       }
       const b64 = Buffer.from(req.file.buffer).toString("base64");
       let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-      const cloudinaryResponse = await uploadOnCloudinary(dataURI);
-      if (cloudinaryResponse.error || !cloudinaryResponse.secure_url) {
-        return res
-          .status(500)
-          .json({ message: "Failed to upload image to Cloudinary" });
-      }     
+      const cloudinaryResponse = await uploadOnCloudinary(dataURI);    
       const studentId = req.userId;
       await Documents.findOneAndUpdate({ student: studentId }, { [documentType]: cloudinaryResponse.secure_url } , { upsert: true });
       return res.status(200).json({ message: "Document uploaded successfully" });
@@ -242,33 +183,7 @@ const studentController = {
     try
     {
       const studentId = new ObjectId(req.userId) ;
-      const pdpAttendance = await Pdpattendance.aggregate([
-        { $match: { student: studentId } }, 
-        { $sort: { date: 1 } },
-        { $group: 
-          { _id: null, 
-            totalClasses: { $sum: 1 }, 
-            totalPresent: { 
-              $sum: { 
-                $cond: { 
-                  if: { $or: [ "$attended", "$isAc" ] }, 
-                  then: 1, 
-                  else: 0 
-                }
-              }
-            },
-            attendance: { $push: {date:"$date",attended:"$attended",isAc:"$isAc"} } 
-          } 
-        }, 
-        {
-          $project:{ 
-            _id: 0,
-            attendance: 1,
-            totalClasses: 1,
-            totalPresent: 1
-          }
-        }
-      ]);
+      const pdpAttendance = await Pdpattendance.aggregate(pipelines.pdpAttendancePipeline(studentId));
       return res.status(200).json(pdpAttendance[0]);
     }
     catch(err)
@@ -292,22 +207,7 @@ const studentController = {
   result: async(req,res)=>{
     try{
       const studentId=new ObjectId(req.userId);
-      const result= await Result.aggregate([
-        {$match: {student: studentId}},
-        {$lookup: { from: "subjects", localField: "subject", foreignField: "_id", as: "subjectDetails" }},
-        {$lookup: { from: "exams", localField: "exam", foreignField: "_id", as: "examDetails" }},
-        {$unwind: "$subjectDetails"},
-        {$unwind: "$examDetails"},
-        {$group: {
-          _id: "$examDetails",
-          result: {$push: {subject: "$subjectDetails.name", maximumMarks:"$maximumMarks", marksObtained:"$marksObtained"}}
-        }},
-        {$project:{
-          exam:"$_id.examName",
-          result: 1,
-          _id: 0
-        }}
-      ]);
+      const result= await Result.aggregate(pipelines.resultPipeline(studentId));
       return res.status(200).json(result)
     }
     catch (err) {
@@ -319,19 +219,7 @@ const studentController = {
     try{
       const studentId=req.userId;
       const student=await Student.findOne({_id:studentId});
-      const classNote=await ClassNotes.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'-_id'}).select(['-_id','-section']);
-      const classNotes = classNote.map(item => { 
-        return {
-          subject: {
-              name: item.subject.name,
-              code: item.subject.code
-          },
-          classnotes: item.classNotes,
-          teacher: {
-            name: item.teacher.name
-          },
-        };
-      });
+      const classNotes=await ClassNotes.find({section: student.section}).populate({path:'subject',select:'-_id'}).populate({path:'teacher',select:'name -_id'}).select(['-_id','-section','-__v']);
       return res.status(200).json({classNotes});
     } catch (err) {
       console.log(err) ;

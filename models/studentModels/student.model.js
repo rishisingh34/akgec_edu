@@ -18,6 +18,12 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  studentNumber:{
+    type: String
+  },
+  universityRollNumber:{
+    type: String
+  },
   section:{
     type:mongoose.Schema.Types.ObjectId,
     ref:"Section"
