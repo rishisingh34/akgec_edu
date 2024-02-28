@@ -21,6 +21,7 @@ router.get("/exam/result",auth,studentController.result);
 router.get("/classNotes",auth,studentController.classNotes);
 router.post("/assignment/uploadSolution",auth,upload.file,studentController.uploadAssignmentSolution);
 router.get("/assignment/solutions",auth,studentController.assignmentSolutions);
-router.post("/feedback",auth,studentController.feedback);   
+router.post("/feedback",auth,studentController.feedback);  
+router.get("/syllabus",auth,studentController.syllabus); 
 
 module.exports = router;

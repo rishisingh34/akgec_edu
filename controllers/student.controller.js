@@ -23,6 +23,7 @@ const ClassNotes=require("../models/studentModels/classNotes.model")
 const AssignmentSolution=require("../models/studentModels/assignmentSolution.model")
 const Feedback=require("../models/studentModels/feedback.model")
 const pipelines=require("../utils/pipelines");
+const Syllabus=require("../models/studentModels/syllabus.model")
 
 const studentController = {
   login: async (req, res) => {
@@ -268,6 +269,18 @@ const studentController = {
     } catch(err) {
       console.log(err) ;
       return res.status(500).json({message : "Internal Server Error"});
+    }
+  },
+  syllabus: async(req,res)=>{
+    try{
+      const studentId=req.userId;
+      const student=await Student.findOne({_id:studentId}).populate('section');
+      const syllabus=await Syllabus.findOne({semester: student.section.semester, batch: student.section.batch});
+      res.status(200).json({syllabus});
+    }
+    catch(err)
+    {
+      res.status(500).json({message:"internal server error"});
     }
   }
 };

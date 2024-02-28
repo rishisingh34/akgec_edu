@@ -10,6 +10,10 @@ const subjectSchema = new mongoose.Schema({
     type:String,
     required: true,
     unique: true
+  },
+  subjectType:{
+    type:String,
+    enum:["Theory","Lab"]
   }
 });
 
