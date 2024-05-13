@@ -1,7 +1,7 @@
 const mailer = require("nodemailer");
 const { EMAIL, PASS } = require("../config/env.config");
 
-const sendMail = async (email, name) => {
+const sendMail = async (otp,subject,user,email) => {
   const transporter = mailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -15,8 +15,8 @@ const sendMail = async (email, name) => {
   const mailOptions = {
     from: EMAIL,
     to: email,
-    subject: "",
-    html: ``,
+    subject: subject,
+    html: `<p style="font-size: 20px">Hello ${user},<br>Here is your OTP:<br><b>${otp}</b><br><br>This OTP is valid till 10 minutes.</p>`,
   };
 
   transporter.sendMail(mailOptions, (err, info) => {

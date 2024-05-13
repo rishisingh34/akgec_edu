@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const studentController = require("../controllers/student.controller");
-const auth  = require("../middlewares/auth.middleware");
+const {auth,verifyResetPasswordToken}  = require("../middlewares/auth.middleware");
 const upload = require("../middlewares/multer.middleware");
 
 router.post("/login", studentController.login);
@@ -23,5 +23,8 @@ router.post("/assignment/uploadSolution",auth,upload.file,studentController.uplo
 router.get("/assignment/solutions",auth,studentController.assignmentSolutions);
 router.post("/feedback",auth,studentController.feedback);  
 router.get("/syllabus",auth,studentController.syllabus); 
+router.post("/resetPassword",studentController.resetPassword);
+router.post("/verifyOtp",studentController.verifyOtp);
+router.post("/setNewPassword",verifyResetPasswordToken,studentController.setNewPassword);
 
 module.exports = router;

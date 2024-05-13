@@ -18,6 +18,17 @@ const Token = {
       });
     });
   },
+  signResetPasswordToken(id)
+  {
+      const payload={
+          aud:id
+      }
+      const options={
+          expiresIn:'10m'
+      }
+      const token=jwt.sign(payload,ACCESS_TOKEN_SECRET,options);
+      return token;
+  },
   verifyAccessToken: async (req, res, next) => {
     try {
       

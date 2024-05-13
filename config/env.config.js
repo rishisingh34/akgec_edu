@@ -8,6 +8,8 @@ module.exports = {
   PASS : process.env.PASS ,
   CLOUD_NAME: process.env.CLOUD_NAME,
   CLOUD_API_SECRET: process.env.CLOUD_API_SECRET,
-  CLOUD_API_KEY: process.env.CLOUD_API_KEY
+  CLOUD_API_KEY: process.env.CLOUD_API_KEY,
+  EMAIL:process.env.EMAIL,
+  PASS:process.env.PASS
 };
 
