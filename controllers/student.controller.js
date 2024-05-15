@@ -240,6 +240,14 @@ const studentController = {
       {
         return res.status(400).json({message:"document type invalid"});
       }
+      if(req.file.size>500*1024)
+      {
+        return res.status(400).json({message:"file size should be less than 500kb."});
+      }
+      if(req.file.mimetype!="image/jpeg" && req.file.mimetype!="image/png" && req.file.mimetype!="application/pdf")
+      {
+          return res.status(400).json({message:"File type not allowed"});
+      }
       const b64 = Buffer.from(req.file.buffer).toString("base64");
       let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
       const cloudinaryResponse = await uploadOnCloudinary(dataURI);    
@@ -303,6 +311,14 @@ const studentController = {
     {
       const studentId=req.userId;
       const assignmentId=req.query.assignmentId;
+      if(req.file.size>2*1024*1024)
+      {
+        return res.status(400).json({message:"file size should be less than 2mb."});
+      }
+      if(req.file.mimetype!="application/pdf")
+      {
+        return res.status(400).json({message:"file type not allowed."});
+      }
       const b64 = Buffer.from(req.file.buffer).toString("base64");
       let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
       const cloudinaryResponse = await uploadOnCloudinary(dataURI);
