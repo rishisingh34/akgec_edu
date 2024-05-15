@@ -66,10 +66,12 @@ const studentController = {
         {
             await Otp.findOneAndDelete({user:username});
         }
-        await Otp.create({
-            otp:otp,
+        const newOtp=new Otp({
             user:username,
+            otp:otp,
+            expires:Date.now()+600000
         })
+        await newOtp.save();
         res.status(200).json({message:"otp sent successfully to your email"})
     }
     catch(err)
