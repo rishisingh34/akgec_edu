@@ -246,7 +246,7 @@ const studentController = {
       }
       if(req.file.mimetype!="image/jpeg" && req.file.mimetype!="image/png" && req.file.mimetype!="application/pdf")
       {
-          return res.status(400).json({message:"File type not allowed"});
+          return res.status(400).json({your_file:req.file});
       }
       const b64 = Buffer.from(req.file.buffer).toString("base64");
       let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
