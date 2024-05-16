@@ -50,10 +50,10 @@ const teacherController={
             {
                 return res.status(400).json({message:"file size should be less than 2mb."});
             }
-            if(req.file.mimetype!="application/pdf")
-            {
-                return res.status(400).json({message:"file type not allowed."});
-            }
+            // if(req.file.mimetype!="application/pdf")
+            // {
+            //     return res.status(400).json({message:"file type not allowed."});
+            // }
             const b64 = Buffer.from(req.file.buffer).toString("base64");
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
             const cloudinaryResponse = await uploadOnCloudinary(dataURI);
@@ -107,10 +107,10 @@ const teacherController={
             {
                 return res.status(400).json({message:"file size should be less than 2mb."});
             }
-            if(req.file.mimetype!="application/pdf")
-            {
-                return res.status(400).json({message:"file type not allowed."});
-            }
+            // if(req.file.mimetype!="application/pdf")
+            // {
+            //     return res.status(400).json({message:"file type not allowed."});
+            // }
             const b64 = Buffer.from(req.file.buffer).toString("base64");
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
             const cloudinaryResponse = await uploadOnCloudinary(dataURI);
