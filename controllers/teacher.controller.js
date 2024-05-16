@@ -5,6 +5,8 @@ const Token=require("../middlewares/token.middleware")
 const ClassNotes = require("../models/studentModels/classNotes.model");
 const  uploadOnCloudinary = require("../utils/cloudinary.util");
 const Assignment=require("../models/studentModels/assignment.model")
+const Student=require("../models/studentModels/student.model")
+const Attendance=require("../models/studentModels/attendance.model")
 
 const teacherController={
     login: async(req,res)=>{
@@ -128,6 +130,36 @@ const teacherController={
         } catch (err) {
             console.log(err);
             return res.status(500).json({ message: "Internal Server Error" });
+        }
+    },
+    markAttendance: async(req,res)=>{
+        try{
+            const {roll,subjectCode,date,attended}=req.body;
+            const student=await Student.findOne({universityRollNumber:roll});
+            if(!student)
+            {
+                return res.status(404).json({message:"student doesnt exist"});
+            }
+            const subject=await Subject.findOne({code:subjectCode});
+            if(!subject)
+            {
+                return res.status(404).json({message:"subject doesnt exist"});
+            }
+            const teacherId=req.userId;
+            const attendance=new Attendance({
+                student:student._id,
+                subject:subject._id,
+                teacher:teacherId,
+                date,
+                attended,
+                markedBy:teacherId
+            });
+            await attendance.save();
+            return res.status(200).json({message:"attendance marked successfully"});
+        }
+        catch(err)
+        {
+            return res.status(500).json({message:"internal server error"});
         }
     }
 }

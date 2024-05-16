@@ -8,5 +8,6 @@ router.get("/sectionStudents", auth , teacherController.sectionStudents);
 router.post("/uploadNotes", auth, upload.single('document'), teacherController.uploadNotes);
 router.get("/sections",auth,teacherController.sectionSubject);
 router.post("/uploadAssignment",auth,upload.single('document'),teacherController.uploadAssignment);
+router.post("/markAttendance",auth,teacherController.markAttendance);
 
 module.exports=router;
