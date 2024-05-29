@@ -218,15 +218,34 @@ const teacherController={
             const assignmentIds = assignments.map(assignment => assignment._id);
     
             const assignmentSolutions = await AssignmentSolution.find({ assignmentId: { $in: assignmentIds } })
-                .populate('student', 'name') 
-                .populate('assignmentId', 'assignment') 
+                .populate('student', 'name')
+                .populate('assignmentId', 'assignment')
                 .exec();
     
             if (!assignmentSolutions.length) {
                 return res.status(404).json({ message: "No solutions found for the assignments." });
             }
     
-            return res.status(200).json({ assignmentSolutions });
+            const groupedSolutions = assignmentSolutions.reduce((acc, solution) => {
+                const assignmentId = solution.assignmentId._id;
+                if (!acc[assignmentId]) {
+                    acc[assignmentId] = {
+                        assignmentId,
+                        assignment: solution.assignmentId.assignment,
+                        solutions: []
+                    };
+                }
+                acc[assignmentId].solutions.push({
+                    _id: solution._id,
+                    student: solution.student,
+                    solution: solution.solution
+                });
+                return acc;
+            }, {});
+    
+            const result = Object.values(groupedSolutions);
+    
+            return res.status(200).json({ assignments: result });
     
         } catch (err) {
             console.log(err);
