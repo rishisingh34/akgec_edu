@@ -134,7 +134,7 @@ const teacherController={
     },
     markAttendance: async(req,res)=>{
         try{
-            const {roll,subjectCode,date,attended}=req.body;
+            const {roll,subjectCode,lectureNo,date,attended}=req.body;
             const student=await Student.findOne({universityRollNumber:roll});
             if(!student)
             {
@@ -145,11 +145,17 @@ const teacherController={
             {
                 return res.status(404).json({message:"subject doesnt exist"});
             }
+            const existingAttendance=await Attendance.findOne({student:student._id,subject:subject._id,lectureNo,date});
+            if(existingAttendance)
+            {
+                await Attendance.findOneAndUpdate({student:student._id,subject:subject._id,lectureNo,date},{attended});
+                return res.status(200).json({message:"attendance updated successfully"});
+            }
             const teacherId=req.userId;
             const attendance=new Attendance({
                 student:student._id,
                 subject:subject._id,
-                teacher:teacherId,
+                lectureNo,
                 date,
                 attended,
                 markedBy:teacherId
