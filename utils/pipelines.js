@@ -78,7 +78,8 @@ const pipelines={
               _id: 0
             }}
           ]
-    }
+    },
+
 }
 
 module.exports=pipelines

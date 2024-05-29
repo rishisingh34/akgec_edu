@@ -7,6 +7,7 @@ const  uploadOnCloudinary = require("../utils/cloudinary.util");
 const Assignment=require("../models/studentModels/assignment.model")
 const Student=require("../models/studentModels/student.model")
 const Attendance=require("../models/studentModels/attendance.model")
+const AssignmentSolution = require('../models/studentModels/assignmentSolution.model') 
 
 const teacherController={
     login: async(req,res)=>{
@@ -160,6 +161,70 @@ const teacherController={
         catch(err)
         {
             return res.status(500).json({message:"internal server error"});
+        }
+    },
+    getNotes : async (req , res ) =>  {
+        try {
+            const teacherId = req.userId;
+            const notes = await ClassNotes.find({ teacher: teacherId })
+                .populate({
+                    path: 'section',
+                    select: 'sectionName batch semester'
+                })
+                .populate({
+                    path: 'subject',
+                    select: 'name code subjectType' 
+                })
+                .select('-teacher'); 
+            return res.status(200).json(notes);
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    },
+    getAssignments : async (req,res )=> {
+        try {
+            const teacherId = req.userId ; 
+            const assignments  = await Assignment.find({ teacher: teacherId }).populate({
+                path : 'section',
+                select : 'sectionName batch semester'
+            }).populate({
+                path : 'subject' , 
+                select : 'name code subjecType'
+            }).select('-teacher');
+
+            return res.status(200).json(assignments) ; 
+        } catch (err ) {
+            console.log(err) ;
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    },
+    getAssignmentSolutions : async (req, res ) => {
+        try {
+            const teacherId = req.userId;
+    
+            const assignments = await Assignment.find({ teacher: teacherId }).exec();
+    
+            if (!assignments.length) {
+                return res.status(404).json({ message: "No assignments found for this teacher." });
+            }
+    
+            const assignmentIds = assignments.map(assignment => assignment._id);
+    
+            const assignmentSolutions = await AssignmentSolution.find({ assignmentId: { $in: assignmentIds } })
+                .populate('student', 'name') 
+                .populate('assignmentId', 'assignment') 
+                .exec();
+    
+            if (!assignmentSolutions.length) {
+                return res.status(404).json({ message: "No solutions found for the assignments." });
+            }
+    
+            return res.status(200).json({ assignmentSolutions });
+    
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "Internal Server Error" });
         }
     }
 }
