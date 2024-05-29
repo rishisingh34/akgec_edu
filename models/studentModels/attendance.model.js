@@ -11,6 +11,10 @@ const attendanceSchema = new mongoose.Schema({
     ref: "Subject",
     required: true,
   },
+  lectureNo:{
+    type: Number,
+    required:true
+  },
   date: {
     type: String,
     required: true,
