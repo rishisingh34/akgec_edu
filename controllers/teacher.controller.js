@@ -181,7 +181,7 @@ const teacherController={
                     path: 'subject',
                     select: 'name code -_id' 
                 })
-                .select('-teacher'); 
+                .select('-teacher -__v -_id'); 
             return res.status(200).json(notes);
         } catch (err) {
             console.log(err);
@@ -197,7 +197,7 @@ const teacherController={
             }).populate({
                 path : 'subject' , 
                 select : 'name code subjecType -_id'
-            }).select('-teacher');
+            }).select('-teacher -__v');
 
             return res.status(200).json(assignments) ; 
         } catch (err ) {
