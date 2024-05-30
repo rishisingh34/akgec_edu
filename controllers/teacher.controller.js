@@ -251,6 +251,40 @@ const teacherController={
             console.log(err);
             return res.status(500).json({ message: "Internal Server Error" });
         }
+    },
+    getAllAttendance : async ( req ,res ) => {
+        try {
+            const { sectionId, subjectId } = req.query;
+        
+            const section = await Section.findById(sectionId).populate('student');
+            if (!section) {
+              return res.status(404).json({ message: "Section not found" });
+            }
+        
+            const studentIds = section.student.map(student => student._id);
+        
+            const attendanceRecords = await Attendance.find({
+              subject: subjectId,
+              student: { $in: studentIds }
+            }).populate('student', 'name') 
+              .populate('markedBy', 'name')
+              .populate('subject', 'name');
+        
+            const groupedByDate = attendanceRecords.reduce((acc, record) => {
+              const date = record.date;
+              if (!acc[date]) {
+                acc[date] = [];
+              }
+              acc[date].push(record);
+              return acc;
+            }, {});
+        
+            return res.status(200).json(groupedByDate);
+        
+          } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Internal Server Error" });
+          }
     }
 }
 

@@ -9,7 +9,7 @@ router.post("/uploadNotes", auth, upload.single('document'), teacherController.u
 router.get("/sections",auth,teacherController.sectionSubject);
 router.post("/uploadAssignment",auth,upload.single('document'),teacherController.uploadAssignment);
 router.post("/markAttendance",auth,teacherController.markAttendance);
-// router.get('/getAllAttendance', auth, teacherController.getAllAttendance); 
+router.get('/getAllAttendance', auth, teacherController.getAllAttendance); 
 router.get("/getNotes",auth,teacherController.getNotes); 
 // router.get('/getTimetable', auth , teacherController.getTimetable);
 router.get('/getAssignments', auth , teacherController.getAssignments);
