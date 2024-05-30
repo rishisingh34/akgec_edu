@@ -254,37 +254,42 @@ const teacherController={
     },
     getAllAttendance : async ( req ,res ) => {
         try {
-            const { sectionId, subjectId } = req.query;
-        
+            const { sectionId, subjectName } = req.query;
+    
             const section = await Section.findById(sectionId).populate('student');
             if (!section) {
-              return res.status(404).json({ message: "Section not found" });
+                return res.status(404).json({ message: "Section not found" });
             }
-        
+    
+            const subject = await Subject.findOne({ name: subjectName });
+            if (!subject) {
+                return res.status(404).json({ message: "Subject not found" });
+            }
+    
             const studentIds = section.student.map(student => student._id);
-        
+    
             const attendanceRecords = await Attendance.find({
-              subject: subjectId,
-              student: { $in: studentIds }
-            }).populate('student', 'name') 
+                subject: subject._id,
+                student: { $in: studentIds }
+            }).populate('student', 'name')
               .populate('markedBy', 'name')
               .populate('subject', 'name');
-        
+    
             const groupedByDate = attendanceRecords.reduce((acc, record) => {
-              const date = record.date;
-              if (!acc[date]) {
-                acc[date] = [];
-              }
-              acc[date].push(record);
-              return acc;
+                const date = record.date;
+                if (!acc[date]) {
+                    acc[date] = [];
+                }
+                acc[date].push(record);
+                return acc;
             }, {});
-        
+    
             return res.status(200).json(groupedByDate);
-        
-          } catch (err) {
+    
+        } catch (err) {
             console.error(err);
             return res.status(500).json({ message: "Internal Server Error" });
-          }
+        }
     }
 }
 
