@@ -175,11 +175,11 @@ const teacherController={
             const notes = await ClassNotes.find({ teacher: teacherId })
                 .populate({
                     path: 'section',
-                    select: 'sectionName batch semester'
+                    select: 'sectionName batch semester -_id'
                 })
                 .populate({
                     path: 'subject',
-                    select: 'name code subjectType' 
+                    select: 'name code -_id' 
                 })
                 .select('-teacher'); 
             return res.status(200).json(notes);
@@ -193,10 +193,10 @@ const teacherController={
             const teacherId = req.userId ; 
             const assignments  = await Assignment.find({ teacher: teacherId }).populate({
                 path : 'section',
-                select : 'sectionName batch semester'
+                select : 'sectionName batch semester -_id'
             }).populate({
                 path : 'subject' , 
-                select : 'name code subjecType'
+                select : 'name code subjecType -_id'
             }).select('-teacher');
 
             return res.status(200).json(assignments) ; 
@@ -218,7 +218,7 @@ const teacherController={
             const assignmentIds = assignments.map(assignment => assignment._id);
     
             const assignmentSolutions = await AssignmentSolution.find({ assignmentId: { $in: assignmentIds } })
-                .populate('student', 'name')
+                .populate('student', 'name universityRollNumber studentNumber -_id')
                 .populate('assignmentId', 'assignment')
                 .exec();
     
@@ -236,7 +236,6 @@ const teacherController={
                     };
                 }
                 acc[assignmentId].solutions.push({
-                    _id: solution._id,
                     student: solution.student,
                     solution: solution.solution
                 });
