@@ -271,9 +271,7 @@ const teacherController={
             const attendanceRecords = await Attendance.find({
                 subject: subject._id,
                 student: { $in: studentIds }
-            }).populate('student', 'name')
-              .populate('markedBy', 'name')
-              .populate('subject', 'name');
+            }).populate('student', 'name universityRollNumber studentNumber -_id').select('-__v -subject -_id -markedBy');
     
             const groupedByDate = attendanceRecords.reduce((acc, record) => {
                 const date = record.date;
