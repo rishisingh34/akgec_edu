@@ -149,7 +149,7 @@ const teacherController={
             const existingAttendance=await Attendance.findOne({student:student._id,subject:subject._id,lectureNo,date});
             if(existingAttendance)
             {
-                await Attendance.findOneAndUpdate({student:student._id,subject:subject._id,lectureNo,date},{attended});
+                await Attendance.findOneAndUpdate({student:student._id,subject:subject._id,lectureNo,date},{attended,isAc});
                 return res.status(200).json({message:"attendance updated successfully"});
             }
             const teacherId=req.userId;
