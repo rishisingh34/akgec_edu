@@ -135,7 +135,7 @@ const teacherController={
     },
     markAttendance: async(req,res)=>{
         try{
-            const {roll,subjectCode,lectureNo,date,attended}=req.body;
+            const {roll,subjectCode,lectureNo,date,attended,isAc}=req.body;
             const student=await Student.findOne({universityRollNumber:roll});
             if(!student)
             {
@@ -159,6 +159,7 @@ const teacherController={
                 lectureNo,
                 date,
                 attended,
+                isAc,
                 markedBy:teacherId
             });
             await attendance.save();
