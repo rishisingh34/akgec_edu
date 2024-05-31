@@ -254,14 +254,14 @@ const teacherController={
     },
     getAllAttendance : async ( req ,res ) => {
         try {
-            const { sectionId, subjectName } = req.query;
+            const { sectionId, subjectCode } = req.query;
     
             const section = await Section.findById(sectionId).populate('student');
             if (!section) {
                 return res.status(404).json({ message: "Section not found" });
             }
     
-            const subject = await Subject.findOne({ name: subjectName });
+            const subject = await Subject.findOne({ code: subjectCode });
             if (!subject) {
                 return res.status(404).json({ message: "Subject not found" });
             }
