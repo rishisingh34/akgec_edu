@@ -1,13 +1,15 @@
 const Teacher=require("../models/teacherModels/teacher.model")
 const Subject=require("../models/studentModels/subject.model")
 const Section=require("../models/studentModels/section.model")
-const Token=require("../middlewares/token.middleware")
 const ClassNotes = require("../models/studentModels/classNotes.model");
 const  uploadOnCloudinary = require("../utils/cloudinary.util");
 const Assignment=require("../models/studentModels/assignment.model")
 const Student=require("../models/studentModels/student.model")
 const Attendance=require("../models/studentModels/attendance.model")
-const AssignmentSolution = require('../models/studentModels/assignmentSolution.model') 
+const AssignmentSolution = require('../models/studentModels/assignmentSolution.model') ;
+const Otp = require('../models/studentModels/otp.model'); 
+const sendMail = require('../utils/mailer.util'); 
+const Token = require("../middlewares/token.middleware");
 
 const teacherController={
     login: async(req,res)=>{
@@ -285,6 +287,76 @@ const teacherController={
     
         } catch (err) {
             console.error(err);
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    },
+    resetPassword : async (req, res ) => {
+        try {
+            const { email } = req.body;
+            const teacher = await Teacher.findOne({ email }).select('name email');
+            
+            if (!teacher) {
+                return res.status(404).json({ message: "User not found" });
+            }
+    
+            const otp = Math.floor(Math.random() * 8999) + 1000;
+            await sendMail(otp, "Reset Password", teacher.name, teacher.email);
+    
+            const existingOtp = await Otp.findOne({ user: email });
+            if (existingOtp) {
+                await Otp.findOneAndDelete({ user: email });
+            }
+    
+            const newOtp = new Otp({
+                user: email,
+                otp: otp,
+                expires: Date.now() + 600000 
+            });
+    
+            await newOtp.save();
+            res.status(200).json({ message: "OTP sent successfully to your email" });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    },
+    verifyOtp : async (req, res) => {
+        try {
+            const { email, otp } = req.body;
+            const teacher = await Teacher.findOne({ email });
+            if (!teacher) {
+                return res.status(404).json({ message: "User not found" });
+            }
+    
+            const OTP = await Otp.findOne({ user: email });
+            if (!OTP) {
+                return res.status(404).json({ message: "OTP not found" });
+            }
+    
+            if (OTP.expires < Date.now()) {
+                return res.status(403).json({ message: "OTP expired." });
+            }
+    
+            if (OTP.otp != otp) {
+                return res.status(400).json({ message: "Incorrect OTP." });
+            }
+    
+            const resetPasswordToken = Token.signResetPasswordToken(teacher.id);
+            res.cookie('resetPasswordToken', resetPasswordToken, { httpOnly: true, sameSite: 'None', secure: true });
+            return res.status(200).json({ message: "OTP verified successfully" });
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    },
+    setNewPassword : async (req, res) => {
+        try {
+            const { newPassword } = req.body;
+            const teacherId = req.user;            
+            await Teacher.findOneAndUpdate({ _id: teacherId }, { password: newPassword });            
+            return res.status(200).json({ message: "Password reset successful." });
+        } catch (err) {
+            console.log(err);
             return res.status(500).json({ message: "Internal Server Error" });
         }
     }

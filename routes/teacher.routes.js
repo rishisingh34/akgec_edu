@@ -1,6 +1,6 @@
 const router=require("express").Router();
 const teacherController=require("../controllers/teacher.controller");
-const {auth} = require("../middlewares/auth.middleware");
+const {auth,verifyResetPasswordToken}  = require("../middlewares/auth.middleware");
 const upload = require("../middlewares/multer.middleware");
 
 router.post("/login",teacherController.login);
@@ -14,6 +14,9 @@ router.get("/getNotes",auth,teacherController.getNotes);
 // router.get('/getTimetable', auth , teacherController.getTimetable);
 router.get('/getAssignments', auth , teacherController.getAssignments);
 router.get('/getAssignmentSolutions', auth , teacherController.getAssignmentSolutions);
+router.post("/resetPassword", teacherController.resetPassword);
+router.post("/verifyOtp", teacherController.verifyOtp);
+router.post("/setNewPassword",verifyResetPasswordToken, teacherController.setNewPassword);
 
 
 
