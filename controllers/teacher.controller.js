@@ -137,7 +137,7 @@ const teacherController={
     },
     markAttendance: async(req,res)=>{
         try{
-            const {roll,subjectCode,lectureNo,date,attended}=req.body;
+            const {roll,subjectCode,lectureNo,date,attended,isAc}=req.body;
             const student=await Student.findOne({universityRollNumber:roll});
             if(!student)
             {
@@ -151,7 +151,7 @@ const teacherController={
             const existingAttendance=await Attendance.findOne({student:student._id,subject:subject._id,lectureNo,date});
             if(existingAttendance)
             {
-                await Attendance.findOneAndUpdate({student:student._id,subject:subject._id,lectureNo,date},{attended});
+                await Attendance.findOneAndUpdate({student:student._id,subject:subject._id,lectureNo,date},{attended,isAc});
                 return res.status(200).json({message:"attendance updated successfully"});
             }
             const teacherId=req.userId;
@@ -161,6 +161,7 @@ const teacherController={
                 lectureNo,
                 date,
                 attended,
+                isAc,
                 markedBy:teacherId
             });
             await attendance.save();
@@ -255,14 +256,14 @@ const teacherController={
     },
     getAllAttendance : async ( req ,res ) => {
         try {
-            const { sectionId, subjectName } = req.query;
+            const { sectionId, subjectCode } = req.query;
     
             const section = await Section.findById(sectionId).populate('student');
             if (!section) {
                 return res.status(404).json({ message: "Section not found" });
             }
     
-            const subject = await Subject.findOne({ name: subjectName });
+            const subject = await Subject.findOne({ code: subjectCode });
             if (!subject) {
                 return res.status(404).json({ message: "Subject not found" });
             }
