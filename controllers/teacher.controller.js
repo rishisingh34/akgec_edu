@@ -8,7 +8,7 @@ const Student=require("../models/studentModels/student.model")
 const Attendance=require("../models/studentModels/attendance.model")
 const AssignmentSolution = require('../models/studentModels/assignmentSolution.model') ;
 const Otp = require('../models/studentModels/otp.model'); 
-const sendMail = require('../utils/mailer.util'); 
+const {sendMail}=require("../utils/mailer.util");
 const Token = require("../middlewares/token.middleware");
 
 const teacherController={
