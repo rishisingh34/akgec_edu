@@ -104,8 +104,7 @@ const teacherController={
     },
     uploadAssignment: async(req,res)=>{
         try {
-            const {sectionId , subject } = req.query ;
-            const {description, deadline} =req.body ;
+            const {sectionId , subject , description, deadline} = req.query ;
             const teacherId = req.userId ;
             const subjectId = await Subject.findOne({name: subject});
             if(req.file.size>2*1024*1024)
